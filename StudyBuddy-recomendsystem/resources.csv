@@ -1,0 +1,31 @@
+topic,title,type,link
+Python,Python Official Docs,Docs,https://docs.python.org/3/
+Python,Python for Beginners - FreeCodeCamp,Video,https://www.youtube.com/watch?v=rfscVS0vtbw
+Python,Awesome Python GitHub Repo,GitHub,https://github.com/vinta/awesome-python
+Pandas,Pandas Documentation,Docs,https://pandas.pydata.org/docs/
+Pandas,Pandas Tutorial Playlist,Video,https://www.youtube.com/playlist?list=PL-osiE80TeTtoQCKZ03TU5fNfx2UY6U4p
+Pandas,Pandas Cheatsheet,GitHub,https://github.com/pandas-dev/pandas
+Machine Learning,Hands-On Machine Learning with Scikit-Learn,Article,https://scikit-learn.org/stable/tutorial/index.html
+Machine Learning,ML Crash Course - Google,Article,https://developers.google.com/machine-learning/crash-course
+Machine Learning,Machine Learning Playlist,Video,https://www.youtube.com/playlist?list=PLblh5JKOoLUICTaGLRoHQDuF_7q2GfuJF
+Data Science,Intro to Data Science - TowardsDataScience,Article,https://towardsdatascience.com/what-is-data-science-a-complete-overview-8e37cf9c5a75
+Data Science,Data Science for Beginners Playlist,Video,https://www.youtube.com/playlist?list=PL2-dafEMk2A7DlsS5T0t7ueQ3uZR8n0zj
+Data Science,Awesome Data Science GitHub Repo,GitHub,https://github.com/academic/awesome-datascience
+Java,Java Documentation,Docs,https://docs.oracle.com/en/java/
+Java,Java Full Course - BroCode,Video,https://www.youtube.com/watch?v=xk4_1vDrzzo
+Java,Awesome Java GitHub Repo,GitHub,https://github.com/akullpp/awesome-java
+SQL,SQL Tutorial - W3Schools,Article,https://www.w3schools.com/sql/
+SQL,SQL for Beginners - FreeCodeCamp,Video,https://www.youtube.com/watch?v=HXV3zeQKqGY
+SQL,Awesome SQL GitHub Repo,GitHub,https://github.com/numetriclabz/awesome-sql
+Web Development,MDN Web Docs,Docs,https://developer.mozilla.org/en-US/docs/Learn
+Web Development,Full Stack Web Dev Course,Video,https://www.youtube.com/watch?v=nu_pCVPKzTk
+Web Development,Awesome Web Dev GitHub Repo,GitHub,https://github.com/markodenic/web-development-resources
+Cybersecurity,Cybersecurity Basics - CISA,Article,https://www.cisa.gov/cybersecurity
+Cybersecurity,Ethical Hacking Full Course,Video,https://www.youtube.com/watch?v=fNzpcB7ODxQ
+Cybersecurity,Awesome Cybersecurity GitHub Repo,GitHub,https://github.com/sbilly/awesome-security
+Cloud Computing,AWS Training,Article,https://aws.amazon.com/training/
+Cloud Computing,Cloud Computing Basics,Video,https://www.youtube.com/watch?v=2LaAJq1lB1Q
+Cloud Computing,Awesome Cloud GitHub Repo,GitHub,https://github.com/paperswithcode/awesome-cloud
+Artificial Intelligence,AI Basics - IBM,Article,https://www.ibm.com/cloud/learn/what-is-artificial-intelligence
+Artificial Intelligence,AI Full Course,Video,https://www.youtube.com/watch?v=JMUxmLyrhSk
+Artificial Intelligence,Awesome AI GitHub Repo,GitHub,https://github.com/owainlewis/awesome-artificial-intelligence
