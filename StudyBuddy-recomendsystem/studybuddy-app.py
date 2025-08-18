@@ -1,4 +1,4 @@
-#studybuddy full code
+# studybuddy.py - Full AI-Powered StudyBuddy
 import os
 import streamlit as st
 import pandas as pd
@@ -26,7 +26,7 @@ if "REPLACE_ME" in YOUTUBE_API_KEY:
 # ---------------- STYLING ----------------
 st.markdown("""
 <style>
-/* --- WARM LIBRARY BACKGROUND (original) --- */
+/* --- WARM LIBRARY BACKGROUND --- */
 html, body, .stApp {
     background: 
         linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)),
@@ -35,121 +35,17 @@ html, body, .stApp {
     color: #ffffff;
 }
 
-/* --- CLASSIC BOOK-STYLE HEADING --- */
-h1 {
+/* --- CLEAN CENTERED HEADING --- */
+.heading {
     text-align: center;
-    font-size: 4.2em;
+    font-size: 3.2em;
     font-weight: 700;
-    margin: 1rem auto 0.5rem;
-    letter-spacing: 2px;
-    color: #fff;
-    text-shadow: 
-        2px 2px 8px rgba(0, 0, 0, 0.9),
-        0 0 10px rgba(200, 180, 120, 0.3);
-    font-family: 'Georgia', 'Times New Roman', serif;
-    animation: fadeInUp 1.4s ease-out;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* --- SUBTITLE STYLE --- */
-.subtitle {
-    text-align: center;
-    font-size: 1.3em;
-    color: #e6d5a0 !important;
-    font-style: italic;
-    margin-bottom: 1.5rem;
-    font-weight: 400;
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
-}
-
-/* --- CLEAN FONT FOR BODY --- */
-body, .stMarkdown, .notes, .video-card {
-    font-family: 'Segoe UI', Arial, sans-serif;
-}
-
-/* --- BUTTONS (Soft Green) --- */
-.stButton>button, .stDownloadButton>button {
-    background: linear-gradient(90deg, #2ecc71, #27ae60) !important;
-    color: white !important;
-    border-radius: 12px;
-    padding: 0.6rem 1.6rem;
-    font-weight: 600;
-    border: none;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-}
-.stButton>button:hover, .stDownloadButton>button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
-}
-
-/* --- VIDEO CARD --- */
-.video-card {
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    padding: 14px;
-    margin: 16px auto;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    max-width: 600px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s;
-}
-.video-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-}
-.video-card img {
-    border-radius: 10px;
-    width: 100%;
-    height: auto;
-}
-.video-card a {
-    color: #d1f7c4 !important;
-    font-weight: 600;
-    font-size: 1.1em;
-}
-
-/* --- NOTES BOX --- */
-.notes {
-    background: rgba(20, 20, 30, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    padding: 18px;
-    margin-top: 15px;
-    line-height: 1.7;
-    font-size: 1.05em;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    max-height: 600px;
-    overflow-y: auto;
-    color: #e0ffe0;
-}
-
-/* --- TEXT STYLING --- */
-h2, h3, p, label, .stMarkdown, .stTextInput label {
-    color: #ffffff !important;
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
-}
-
-/* --- INPUT FIELD --- */
-.stTextInput > div > div > input {
-    background: rgba(255, 255, 255, 0.1);
     color: white;
-    border: 1px solid #2ecc71;
-    border-radius: 10px;
-    padding: 10px 15px;
-}
-.stTextInput > div > div > input::placeholder {
-    color: #ccc;
+    margin: 20px 0;
+    padding: 0;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+    font-family: 'Georgia', 'Times New Roman', serif;
+    letter-spacing: 1px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -213,100 +109,6 @@ def generate_ai_notes(topic: str, video_title: str | None = None):
     except Exception as e:
         return f"Error: {e}"
 
-def load_resources_csv():
-    try:
-        df = pd.read_csv("resources.csv")
-        df.columns = [c.strip().lower() for c in df.columns]
-        required = {"topic", "type", "title", "link"}
-        if not required.issubset(df.columns):
-            st.error(f"CSV missing columns. Required: {required}")
-            return None
-        return df
-    except FileNotFoundError:
-        st.warning("⚠️ `resources.csv` not found.")
-        return None
-    except Exception as e:
-        st.error(f"Error loading CSV: {e}")
-        return None
-
-# ---------------- DATA ----------------
-df = load_resources_csv()
-
-# Initialize session state
-if "topic_input" not in st.session_state:
-    st.session_state.topic_input = ""
-
-if "recs" not in st.session_state:
-    st.session_state.recs = []
-
-if "search_history" not in st.session_state:
-    st.session_state.search_history = []
-
-if "favorites" not in st.session_state:
-    st.session_state.favorites = []
-
-# ---------------- UI ----------------
-st.markdown("<h1>StudyBuddy</h1>", unsafe_allow_html=True)
-st.markdown("<p class='subtitle'>Your calm, focused learning companion 📖</p>", unsafe_allow_html=True)
-
-with st.form("query"):
-    topic = st.text_input("🔍 Enter your topic", placeholder="e.g., Python functions, OOPs, DBMS normalization, SQL joins")
-    c1, c2 = st.columns(2)
-    with c1:
-        go = st.form_submit_button("🎯 Recommend")
-    with c2:
-        clear = st.form_submit_button("🧹 Clear")
-
-if clear:
-    st.session_state.recs = []
-    st.session_state.topic_input = ""
-    # Clear note cache
-    for key in list(st.session_state.keys()):
-        if key.startswith("notes_"):
-            del st.session_state[key]
-    st.rerun()
-
-# Update topic input
-if go and topic.strip():
-    st.session_state.topic_input = topic.strip()
-
-# Add to history
-topic_val = st.session_state.get("topic_input", "").strip()
-if topic_val and topic_val not in st.session_state.search_history:
-    st.session_state.search_history.append(topic_val)
-    st.session_state.search_history = st.session_state.search_history[-5:]
-
-# ---------------- SEARCH LOGIC ----------------
-if go and topic_val:
-    topic_q = topic_val.lower()
-    recs = []
-
-    if df is not None:
-        for _, row in df.iterrows():
-            try:
-                row_topic = str(row.get("topic", "")).lower()
-                if fuzz.partial_ratio(topic_q, row_topic) >= 70:
-                    recs.append({
-                        "source": "csv",
-                        "type": str(row.get("type", "Resource")).title(),
-                        "title": str(row.get("title", "(No Title)")),
-                        "url": str(row.get("link", ""))
-                    })
-            except:
-                continue
-
-    yt = get_youtube_videos(topic_q, max_results=3)
-    for v in yt:
-        recs.append({
-            "source": "youtube",
-            "type": "YouTube",
-            "title": v["title"],
-            "url": v["url"],
-            "thumb": v["thumb"]
-        })
-
-    st.session_state.recs = recs
-
 # ---------------- PDF EXPORT HELPER ----------------
 def create_pdf_favorites():
     try:
@@ -324,12 +126,11 @@ def create_pdf_favorites():
     pdf.set_font("Arial", "", 12)
     if st.session_state.favorites:
         for r in st.session_state.favorites:
-            # Clean title: remove •, emojis, and non-latin chars
             title = r['title'].replace('•', '').replace('●', '').replace('▶', '▶').strip()
-            title = title.encode('latin1', 'ignore').decode('latin1')  # Remove unsupported chars
+            title = title.encode('latin1', 'ignore').decode('latin1')
 
             pdf.set_font("Arial", "B", 12)
-            pdf.cell(0, 8, f"- {title}", ln=True)  # Use "-" instead of "•"
+            pdf.cell(0, 8, f"- {title}", ln=True)
 
             pdf.set_font("Arial", "I", 11)
             pdf.set_text_color(26, 188, 156)
@@ -346,6 +147,133 @@ def create_pdf_favorites():
         pdf.cell(0, 10, "No favorites yet.", ln=True)
 
     return pdf.output(dest="S")
+
+# ---------------- LOAD RESOURCES & AI MODEL ----------------
+@st.cache_resource
+def load_resources_and_model():
+    try:
+        df = pd.read_csv("resources.csv")
+        df.columns = [c.strip().lower() for c in df.columns]
+        required = {"topic", "type", "title", "link"}
+        if not required.issubset(df.columns):
+            st.error(f"CSV missing columns. Required: {required}")
+            return None, None, None
+        topics = df["topic"].dropna().tolist()
+    except FileNotFoundError:
+        st.warning("⚠️ `resources.csv` not found.")
+        return None, None, None
+    except Exception as e:
+        st.error(f"Error loading CSV: {e}")
+        return None, None, None
+
+    try:
+        from sentence_transformers import SentenceTransformer
+        model = SentenceTransformer('all-MiniLM-L6-v2')
+        topic_embeddings = model.encode(topics)
+        return df, model, topic_embeddings
+    except Exception as e:
+        st.error("Failed to load AI model. Run: pip install sentence-transformers")
+        return df, None, None
+
+df, embedding_model, topic_embeddings = load_resources_and_model()
+
+# Initialize session state
+if "topic_input" not in st.session_state:
+    st.session_state.topic_input = ""
+
+if "recs" not in st.session_state:
+    st.session_state.recs = []
+
+if "search_history" not in st.session_state:
+    st.session_state.search_history = []
+
+if "favorites" not in st.session_state:
+    st.session_state.favorites = []
+
+# ---------------- UI ----------------
+st.markdown('<div class="heading">StudyBuddy</div>', unsafe_allow_html=True)
+
+with st.form("query"):
+   topic = st.text_input(
+    "Search Topic",
+    placeholder="e.g., Python functions...",
+    value=st.session_state.topic_input,
+    label_visibility="collapsed"
+)
+   c1, c2 = st.columns([2, 1])
+   with c1:
+        go = st.form_submit_button("🎯 Recommend", type="primary")
+   with c2:
+        clear = st.form_submit_button("🧹 Clear")
+
+if clear:
+    st.session_state.recs = []
+    st.session_state.topic_input = ""
+    for key in list(st.session_state.keys()):
+        if key.startswith("notes_"):
+            del st.session_state[key]
+    st.rerun()
+
+if go and topic.strip():
+    st.session_state.topic_input = topic.strip()
+
+# Add to history
+topic_val = st.session_state.get("topic_input", "").strip()
+if topic_val and topic_val not in st.session_state.search_history:
+    st.session_state.search_history.append(topic_val)
+    st.session_state.search_history = st.session_state.search_history[-5:]
+
+# ---------------- SEARCH LOGIC (AI Semantic Match) ----------------
+if go and topic_val and df is not None:
+    recs = []
+
+    # AI: Semantic similarity
+    if embedding_model is not None and topic_embeddings is not None:
+        try:
+            from sklearn.metrics.pairwise import cosine_similarity
+            import numpy as np
+            user_embedding = embedding_model.encode([topic_val])
+            similarities = cosine_similarity(user_embedding, np.array(topic_embeddings))
+            best_idx = similarities.argmax()
+            best_score = similarities[0][best_idx]
+
+            if best_score > 0.6:
+                row = df.iloc[best_idx]
+                recs.append({
+                    "source": "csv",
+                    "type": str(row["type"]).title(),
+                    "title": str(row["title"]),
+                    "url": str(row["link"])
+                })
+        except Exception as e:
+            st.error(f"AI matching error: {e}")
+    else:
+        # Fallback: Fuzzy match
+        for _, row in df.iterrows():
+            try:
+                row_topic = str(row.get("topic", "")).lower()
+                if fuzz.partial_ratio(topic_val.lower(), row_topic) >= 70:
+                    recs.append({
+                        "source": "csv",
+                        "type": str(row.get("type", "Resource")).title(),
+                        "title": str(row.get("title", "(No Title)")),
+                        "url": str(row.get("link", ""))
+                    })
+            except:
+                continue
+
+    # YouTube videos
+    yt = get_youtube_videos(topic_val, max_results=3)
+    for v in yt:
+        recs.append({
+            "source": "youtube",
+            "type": "YouTube",
+            "title": v["title"],
+            "url": v["url"],
+            "thumb": v["thumb"]
+        })
+
+    st.session_state.recs = recs
 
 # ---------------- DISPLAY ----------------
 if st.session_state.recs:
@@ -366,9 +294,9 @@ if st.session_state.recs:
                     if st.button("❤️", key=f"fav_{r['url']}", help="Add to favorites"):
                         if r not in st.session_state.favorites:
                             st.session_state.favorites.append(r)
-                            st.success("Saved!")
+                            st.success("Saved!", icon="✅")
         else:
-            st.info("No matching resources found in your library.")
+            st.info("No matching resources found.")
 
     # --- TAB 2: YOUTUBE ---
     with tabs[1]:
@@ -381,7 +309,7 @@ if st.session_state.recs:
                     st.markdown("<div style='text-align: center; margin: 20px 0;'>", unsafe_allow_html=True)
                     st.image(r["thumb"], width=320)
                     st.markdown(
-                        f"<a href='{r['url']}' target='_blank' style='color: #c1f7d5; font-weight: 600; font-size: 1.1em;'>▶️ {r['title']}</a>",
+                        f"<a href='{r['url']}' target='_blank' style='color: #c1f7c4; font-weight: 600; font-size: 1.1em;'>▶️ {r['title']}</a>",
                         unsafe_allow_html=True
                     )
                     st.markdown("</div>", unsafe_allow_html=True)
@@ -389,7 +317,7 @@ if st.session_state.recs:
                     if st.button("❤️", key=f"yt_{r['url']}", help="Add to favorites"):
                         if r not in st.session_state.favorites:
                             st.session_state.favorites.append(r)
-                            st.success("Video saved!")
+                            st.success("Video saved!", icon="✅")
         else:
             st.info("No YouTube videos found.")
 
@@ -413,14 +341,22 @@ if st.session_state.recs:
 
     # --- TAB 4: FAVORITES ---
     with tabs[3]:
-        st.subheader("⭐ Your Favorite Resources")
+        st.subheader("⭐ Your Favorites")
         if st.session_state.favorites:
-            st.download_button(
-                "📄 Export Favorites as PDF",
-                create_pdf_favorites(),
-                file_name="my_study_favorites.pdf",
-                mime="application/pdf"
-            )
+            try:
+                pdf_data = create_pdf_favorites()
+                if pdf_data:
+                    st.download_button(
+                        "📄 Export Favorites as PDF",
+                        pdf_data,
+                        file_name="my_study_favorites.pdf",
+                        mime="application/pdf"
+                    )
+                else:
+                    st.info("PDF export not available. Install `fpdf`.")
+            except Exception as e:
+                st.error(f"PDF generation failed: {e}")
+
             st.markdown("<br>", unsafe_allow_html=True)
             for r in st.session_state.favorites:
                 icon = "▶️" if r["source"] == "youtube" else "📎"
@@ -429,7 +365,7 @@ if st.session_state.recs:
                 st.session_state.favorites = []
                 st.rerun()
         else:
-            st.info("No favorites yet. Click ❤️ to save resources.")
+            st.info("No favorites yet.")
 
     # --- TAB 5: HISTORY ---
     with tabs[4]:
