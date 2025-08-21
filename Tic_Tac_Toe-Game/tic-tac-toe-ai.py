@@ -21,10 +21,7 @@ def check_winner(b):
     return None
 
 def is_moves_left(b):
-    for row in b:
-        if " " in row:
-            return True
-    return False
+    return any(" " in row for row in b)
 
 # Minimax Algorithm
 def minimax(b, depth, is_maximizing):
@@ -69,17 +66,20 @@ def ai_move():
                     move = (i, j)
     if move:
         board[move[0]][move[1]] = "O"
-        buttons[move[0]][move[1]].config(text="O", state="disabled")
+        buttons[move[0]][move[1]].config(text="O", fg="blue", state="disabled")
         check_game_status()
 
 # Check status
 def check_game_status():
     winner = check_winner(board)
     if winner:
-        label.config(text=f"{winner} Wins! 🎉")
+        if winner == "X":
+            label.config(text="🎉 You Win!", fg="green")
+        else:
+            label.config(text="😎 AI Wins!", fg="red")
         disable_all()
     elif not is_moves_left(board):
-        label.config(text="It's a Draw 🤝")
+        label.config(text="🤝 It's a Draw", fg="orange")
         disable_all()
 
 def disable_all():
@@ -91,7 +91,7 @@ def disable_all():
 def player_move(i, j):
     if board[i][j] == " ":
         board[i][j] = "X"
-        buttons[i][j].config(text="X", state="disabled")
+        buttons[i][j].config(text="X", fg="red", state="disabled")
         check_game_status()
         if is_moves_left(board) and not check_winner(board):
             ai_move()
@@ -102,27 +102,30 @@ def restart():
     board = [[" " for _ in range(3)] for _ in range(3)]
     for i in range(3):
         for j in range(3):
-            buttons[i][j].config(text=" ", state="normal")
-    label.config(text="You: X   |   AI: O")
+            buttons[i][j].config(text=" ", state="normal", fg="black")
+    label.config(text="You: X   |   AI: O", fg="black")
 
 # GUI Setup
 root = tk.Tk()
-root.title("Tic Tac Toe AI")
+root.title("Tic Tac Toe AI 🎮")
+root.config(bg="#f0f0f0")
 
-label = tk.Label(root, text="You: X   |   AI: O", font=("Arial", 14))
-label.pack()
+label = tk.Label(root, text="You: X   |   AI: O", font=("Arial", 16, "bold"), bg="#f0f0f0")
+label.pack(pady=10)
 
-frame = tk.Frame(root)
+frame = tk.Frame(root, bg="#f0f0f0")
 frame.pack()
 
 buttons = [[None for _ in range(3)] for _ in range(3)]
 for i in range(3):
     for j in range(3):
-        buttons[i][j] = tk.Button(frame, text=" ", font=("Arial", 20), width=5, height=2,
+        buttons[i][j] = tk.Button(frame, text=" ", font=("Arial", 24, "bold"), width=5, height=2,
+                                  relief="ridge", bg="white",
                                   command=lambda i=i, j=j: player_move(i, j))
-        buttons[i][j].grid(row=i, column=j)
+        buttons[i][j].grid(row=i, column=j, padx=5, pady=5)
 
-restart_btn = tk.Button(root, text="Restart", font=("Arial", 12), command=restart)
-restart_btn.pack()
+restart_btn = tk.Button(root, text="🔄 Restart", font=("Arial", 14, "bold"),
+                        bg="#4CAF50", fg="white", relief="raised", command=restart)
+restart_btn.pack(pady=10)
 
 root.mainloop()
