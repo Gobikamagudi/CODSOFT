@@ -1,0 +1,13 @@
+# Folders to ignore
+dataset/
+intruder_snapshots/
+__pycache__/
+*.pyc
+
+# Model files
+face_model.yml
+labels.npy
+
+# OS files
+.DS_Store
+Thumbs.db
